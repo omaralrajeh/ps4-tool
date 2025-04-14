@@ -1,0 +1,94 @@
+
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>تعديل أجهزة PS4</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="manifest" href="manifest.json">
+  <style>
+    body {
+      background-color: #000;
+      background-image: url('1000191741.jpg');
+      background-repeat: no-repeat;
+      background-position: center center;
+      background-size: cover;
+      color: #fff;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+    .version {
+      background: rgba(0, 0, 0, 0.7);
+      padding: 20px;
+      margin: 20px auto;
+      border-radius: 15px;
+      max-width: 600px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.5);
+    }
+    button {
+      background-color: #007acc;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 1rem;
+      margin: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #005a9e;
+    }
+    #status {
+      margin-top: 30px;
+      font-size: 1.2rem;
+      color: #00ff99;
+    }
+  </style>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js')
+        .then(function(reg) {
+          console.log("Service Worker Registered!", reg);
+        }).catch(function(err) {
+          console.log("Service Worker registration failed: ", err);
+        });
+    }
+  </script>
+</head>
+<body>
+  <div class="version">
+    <h2>إصدار 6.72</h2>
+    <button onclick="sendPayload('goldhen_2.3_672.bin')">تشغيل GoldHEN 2.3</button>
+  </div>
+
+  <div class="version">
+    <h2>إصدار 9.00</h2>
+    <button onclick="sendPayload('goldhen_2.3_900.bin')">تشغيل GoldHEN 2.3</button>
+  </div>
+
+  <p id="status">الحالة: جاهز</p>
+
+  <script>
+    function sendPayload(filename) {
+      document.getElementById("status").innerText = "جارٍ إرسال التعديل: " + filename;
+      fetch(filename)
+        .then(response => response.arrayBuffer())
+        .then(payload => {
+          var xhr = new XMLHttpRequest();
+          xhr.open("POST", "http://192.168.0.100:9020", true);
+          xhr.onload = function () {
+            document.getElementById("status").innerText = "تم إرسال التعديل بنجاح!";
+          };
+          xhr.onerror = function () {
+            document.getElementById("status").innerText = "فشل الإرسال. تحقق من الاتصال.";
+          };
+          xhr.send(payload);
+        })
+        .catch(err => {
+          document.getElementById("status").innerText = "خطأ في تحميل الملف: " + err;
+        });
+    }
+  </script>
+</body>
+</html>
